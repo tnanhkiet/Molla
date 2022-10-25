@@ -1,0 +1,6 @@
+Database: - Thêm data vào SQL Sever, data nằm trong folder "Database"
+	    - Sửa lại ConnectionString theo database, trong file appsetings.json/ConnectionStrings/MollaDb
+=======================================================
+Trang Admin: url:.../Admin
+User: kiet
+Pass: 123456

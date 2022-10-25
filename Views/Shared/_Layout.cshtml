@@ -1,0 +1,353 @@
+﻿@using Web.SessionService;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor Accessor
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- molla/index-2.html  22 Nov 2019 09:55:32 GMT -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"]</title>
+    <meta name="keywords" content="HTML5 Template">
+    <meta name="description" content="Molla - Bootstrap eCommerce Template">
+    <meta name="author" content="p-themes">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icons/favicon-16x16.png">
+    <link rel="manifest" href="/assets/images/icons/site.html">
+    <link rel="mask-icon" href="/assets/images/icons/safari-pinned-tab.svg" color="#666666">
+    <link rel="shortcut icon" href="/assets/images/icons/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="Molla">
+    <meta name="application-name" content="Molla">
+    <meta name="msapplication-TileColor" content="#cc9966">
+    <meta name="msapplication-config" content="/assets/images/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Plugins CSS File -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/plugins/owl-carousel/owl.carousel.css">
+    <link rel="stylesheet" href="/assets/css/plugins/magnific-popup/magnific-popup.css">
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    @RenderSection("css", required: false)
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="header-middle sticky-header">
+                <div class="container">
+                    <div class="header-left">
+                        <button class="mobile-menu-toggler">
+                            <span class="sr-only">Toggle mobile menu</span>
+                            <i class="icon-bars"></i>
+                        </button>
+
+                        <a asp-controller="Home" asp-action="Index" class="logo">
+                            <img src="/assets/images/logo.png" alt="Molla Logo" width="105" height="25">
+                        </a>
+
+                        <nav class="main-nav">
+                            <ul class="menu sf-arrows">
+                                <li>
+                                    <a href="@Url.Action("Index", "Home")" class="sf-with-ul">Trang chủ</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "News")" class="sf-with-ul">Tin tức</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("About", "Home")" class="sf-with-ul">Giới thiệu</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Contact", "Home")" class="sf-with-ul">Liên hệ</a>
+                                </li>
+                            </ul><!-- End .menu -->
+                        </nav><!-- End .main-nav -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-right">
+                        <div class="dropdown cart-dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false" data-display="static">
+                                <i class="icon-shopping-cart"></i>
+                                <span class="cart-count">0</span>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div class="dropdown-cart-products">
+
+                                </div><!-- End .cart-product -->
+
+                                <div class="dropdown-cart-total">
+                                    <span>Tổng cộng</span>
+
+                                    <span class="cart-total-price">0 VNĐ</span>
+                                </div><!-- End .dropdown-cart-total -->
+
+                                <div class="dropdown-cart-action">
+                                    @* <a href="#" class="btn btn-outline-primary-2 removecart">Xóa</a>
+
+                                    <a asp-controller="Home" asp-action="Pay"
+                                        class="btn btn-primary disable"><span>Thanh
+                                            toán</span><i class="icon-long-arrow-right"></i></a> *@
+
+                                </div><!-- End .dropdown-cart-total -->
+                            </div><!-- End .dropdown-menu -->
+                        </div><!-- End .cart-dropdown -->
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-middle -->
+        </header><!-- End .header -->
+
+        @RenderBody()
+
+        <footer class="footer footer-dark">
+            <div class="footer-middle">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget widget-about">
+                                <img src="/assets/images/logo-footer.png" class="footer-logo" alt="Footer Logo"
+                                    width="105" height="25">
+                                <p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate
+                                    magna eros eu erat. </p>
+
+                                <div class="social-icons">
+                                    <a href="#" class="social-icon" title="Facebook" target="_blank"><i
+                                            class="icon-facebook-f"></i></a>
+                                    <a href="#" class="social-icon" title="Twitter" target="_blank"><i
+                                            class="icon-twitter"></i></a>
+                                    <a href="#" class="social-icon" title="Instagram" target="_blank"><i
+                                            class="icon-instagram"></i></a>
+                                    <a href="#" class="social-icon" title="Youtube" target="_blank"><i
+                                            class="icon-youtube"></i></a>
+                                    <a href="#" class="social-icon" title="Pinterest" target="_blank"><i
+                                            class="icon-pinterest"></i></a>
+                                </div><!-- End .soial-icons -->
+                            </div><!-- End .widget about-widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="#">About Molla</a></li>
+                                    <li><a href="#">How to shop on Molla</a></li>
+                                    <li><a href="#">FAQ</a></li>
+                                    <li><a href="#">Contact us</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="#">Payment Methods</a></li>
+                                    <li><a href="#">Money-back guarantee!</a></li>
+                                    <li><a href="#">Returns</a></li>
+                                    <li><a href="#">Shipping</a></li>
+                                    <li><a href="#">Terms and conditions</a></li>
+                                    <li><a href="#">Privacy Policy</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="widget">
+                                <h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+
+                                <ul class="widget-list">
+                                    <li><a href="#">Sign In</a></li>
+                                    <li><a href="#">View Cart</a></li>
+                                    <li><a href="#">My Wishlist</a></li>
+                                    <li><a href="#">Track My Order</a></li>
+                                    <li><a href="#">Help</a></li>
+                                </ul><!-- End .widget-list -->
+                            </div><!-- End .widget -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-middle -->
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p>
+                    <!-- End .footer-copyright -->
+                    <figure class="footer-payments">
+                        <img src="/assets/images/payments.png" alt="Payment methods" width="272" height="20">
+                    </figure><!-- End .footer-payments -->
+                </div><!-- End .container -->
+            </div><!-- End .footer-bottom -->
+        </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+            <nav class="mobile-nav">
+                <ul class="mobile-menu">
+                    <li><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li>
+                    <li><a asp-controller="News" asp-action="Index">Tin Tức</a></li>
+                    <li><a asp-controller="Home" asp-action="About">Giới Thiệu</a></li>
+                    <li><a asp-controller="Home" asp-action="Contact">Liên Hệ</a></li>
+                </ul>
+            </nav><!-- End .mobile-nav -->
+
+            <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+            </div><!-- End .social-icons -->
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .mobile-menu-container -->
+
+    <!-- Plugins JS File -->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/jquery.hoverIntent.min.js"></script>
+    <script src="/assets/js/jquery.waypoints.min.js"></script>
+    <script src="/assets/js/superfish.min.js"></script>
+    <script src="/assets/js/owl.carousel.min.js"></script>
+    <script src="/assets/js/jquery.magnific-popup.min.js"></script>
+    <script>
+        $(function () {
+            getCart();
+            function getCart() {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("getCart", "Home")",
+                    contentType: 'application/json; charset=UTF-8',
+                    dataType: "json",
+                    success: function (item) {
+                        console.log(item);
+                        $(".cart-count").html(item.length);
+                        $(".dropdown-cart-action").html("");
+                        if (item.length > null)
+                        {
+                            var row = `<a href="#" class="btn btn-outline-primary-2 removecart">Xóa</a>
+
+                                    <a href="/Home/Pay"
+                                        class="btn btn-primary disable"><span>Thanh
+                                            toán</span><i class="icon-long-arrow-right"></i></a>`;
+                            $(".dropdown-cart-action").append(row);
+                        }
+                        $(".dropdown-cart-products").html("");
+                        let totalPrice = 0;
+                        for (let i = 0; i < item.length; i++) {
+                            var row = `<div class="product">
+                                        <div class="product-cart-details">
+                                            <h4 class="product-title">
+                                                <a href="/Home/Details/${item[i]._product.id}">${item[i]._product.name}</a>
+                                            </h4>
+
+                                            <span class="cart-product-info">
+                                                <span class="cart-product-qty">${item[i]._amount}</span>
+                                                x ${Math.floor(item[i]._productPrice.price).toLocaleString("vi-VN")} VNĐ
+                                            </span>
+                                        </div><!-- End .product-cart-details -->
+
+                                        <figure class="product-image-container">
+                                            <a href="product.html" class="product-image">
+                                                <img src="/assets/images/products/${item[i]._productPrice.picture}">
+                                            </a>
+                                        </figure>
+                                        <a data-productid="${item[i]._product.id}" data-colorid="${item[i]._productPrice.colorId}" data-sizeid="${item[i]._productPrice.sizeId}" data-amount="${item[i]._amount}" class="btn-remove removeproduct" title="Remove Product"><i class="icon-close"></i></a>
+                                    </div>`;
+                            totalPrice += item[i]._productPrice.price * item[i]._amount;
+                            $(".dropdown-cart-products").append(row);
+                        }
+                        $(".removeproduct").on("click", function (e) {
+                            e.preventDefault();
+                            var productId = $(this).data("productid");
+                            var colorId = $(this).data("colorid");
+                            var sizeId = $(this).data("sizeid");
+                            var amount = $(this).data("amount");
+                            removeProduct(productId, colorId, sizeId, amount);
+                        });
+                        $(".removecart").on("click", function (e) {
+                            e.preventDefault();
+                            removeCart();
+                        });
+                        $(".cart-total-price").html(`${Math.floor(totalPrice).toLocaleString("vi-VN")} VNĐ`);
+                    }
+                });
+            }
+            $(".btn-cart").on("click", function (e) {
+                e.preventDefault();
+                var productId = $(this).data("id");
+                var colorId = $(".product-nav-thumbs a[class=active]").data("colorid");
+                var sizeId = $("#size").val();
+                var amount = $("#qty").val();
+                addCart(productId, colorId, sizeId, amount);
+            });
+            function addCart(productId, colorId, sizeId, amount) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("addCart", "Home")",
+                    contentType: 'application/json; charset=UTF-8',
+                    data: {
+                        productId: productId,
+                        colorId: colorId,
+                        sizeId: sizeId,
+                        amount: amount
+                    },
+                    dataType: "json",
+                    success: function (item) {
+                        getCart();
+                    }
+                })
+            }
+            function removeProduct(productId, colorId, sizeId, amount) {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("removeProduct", "Home")",
+                    contentType: 'application/json; charset=UTF-8',
+                    data: {
+                        productId: productId,
+                        colorId: colorId,
+                        sizeId: sizeId,
+                        amount: amount
+                    },
+                    dataType: "json",
+                    success: function (item) {
+                        getCart();
+                    }
+                })
+            }
+            function removeCart() {
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("removeCart", "Home")",
+                    contentType: 'application/json; charset=UTF-8',
+                    dataType: "json",
+                    data: {},
+                    success: function (item) {
+                        getCart();
+                    }
+                })
+            }
+        });
+    </script>
+    @RenderSection("js", required: false)
+    <!-- Main JS File -->
+    <script src="/assets/js/main.js"></script>
+</body>
+
+
+<!-- molla/index-2.html  22 Nov 2019 09:55:42 GMT -->
+
+</html>

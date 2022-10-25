@@ -1,0 +1,195 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Danh sách sản phẩm";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Danh sách sản phẩm</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="products" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Thương hiệu</th>
+                    <th>Ngày tạo</th>
+                    <th>Người tạo</th>
+                    <th style="width: 20px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Thương hiệu</th>
+                    <th>Ngày tạo</th>
+                    <th>Người tạo</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<div class="modal fade" id="modal-product-category">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Chuyển mục sản phẩm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted">Chọn chuyên mục: </p>
+                <form method="post">
+                    <input type="hidden" name="productId" id="productId" />
+                    @{
+                        List<Category> categories = (List<Category>)ViewBag.Categories;
+                        foreach (var item in categories)
+                        {
+                            <div class="form-check">
+                                <input class="mr-2" value="@item.Id" type="checkbox">
+                                <label class="form-check-label">@item.Name</label>
+                            </div>
+                        }
+                    }
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@section css{
+<link rel="stylesheet" href="/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+}
+@section js{
+<script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="/assets/plugins/jszip/jszip.min.js"></script>
+<script src="/assets/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="/assets/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script>
+    $(function () {
+        getProducts();
+        function getProducts() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getProducts")",
+                contentType: 'application/json; charset=UTF-8',
+                dataType: "json",
+                success: function (item) {
+                    console.log(item);
+                    for (let i = 0; i < item.length; i++) {
+                        var row = `<tr>
+                                    <td>${i + 1}</td>
+                                    <td>
+                                        <img src="/assets/images/products/${item[i][1]}" alt="Product" class="img-circle img-size-32 mr-2" />
+                                        ${item[i][2]}
+                                    </td>
+                                    <td>${item[i][3]}</td>
+                                    <td>${item[i][4]}</td>
+                                    <td>${item[i][5]}</td>
+                                    <td class="text-right">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            <i class="fas fa-align-center"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item editproduct" data-id="${item[i][0]}">Cập nhật</a>
+                                            <a class="dropdown-item removeproduct" data-id="${item[i][0]}">Xóa</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item productcategory" data-toggle="modal" data-target="#modal-product-category" data-id="${item[i][0]}">Chuyên mục</a>
+                                            <a class="dropdown-item productprice" data-id="${item[i][0]}">Giá</a>
+                                            @* <a class="dropdown-item productvoting" data-id="${item[i][0]}">Bình chọn</a> *@
+                                        </div>
+                                    </td>
+                                </tr>`;
+                        $("#products tbody").append(row);
+                    }
+                    $("#products").DataTable({
+                        "responsive": true, "lengthChange": false, "autoWidth": false,
+                        "buttons": ["excel", "pdf", "print",
+                            {
+                                text: 'Thêm sản phẩm',
+                                attr: { class: 'btn btn-primary' },
+                                action: function (e, dt, node, config) {
+                                    window.location = "/Admin/EditProduct";
+                                }
+                            }
+                        ]
+                    }).buttons().container().appendTo('#products_wrapper .col-md-6:eq(0)');
+                }
+            });
+        };
+        $(document).on("click", "#products .editproduct", function (e) {
+            e.preventDefault();
+            var myid = $(this).data("id");
+            window.location = "/Admin/EditProduct/" + myid;
+        })
+        $(document).on("click", "#products .removeproduct", function (e) {
+            e.preventDefault();
+            if (confirm("Bạn có thật sự muốn xóa?")) {
+                var myid = $(this).data("id");
+                window.location = "/Admin/RemoveProduct/" + myid;
+            }
+        })
+        $(document).on("click", "#products .productcategory", function (e) {
+            var productId = $(this).data("id");
+            $("#productId").val(productId);
+            $(".form-check input").attr("checked", false);
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getProductCategoriesChecked")",
+                contentType: 'application/json; charset=UTF-8',
+                data: {
+                    productId: productId
+                },
+                dataType: "json",
+                success: function (item) {
+                    for( let i = 0; i < item.length; i++)
+                    {
+                        $(".form-check input[value='"+item[i]+"']").attr("checked", true);
+                    }
+                }
+            })
+        })
+        // Save productCatelogies
+        $(document).on("change", ".form-check input", function (e) {
+            var categoryId = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("saveProductCategory")",
+                contentType: 'application/json; charset=UTF-8',
+                data: {
+                    productId:  $("#productId").val(),
+                    categoryId: categoryId
+                },
+                dataType: "json",
+                success: function (item) {
+
+                }
+            })
+        })
+        $(document).on("click", "#products .productprice", function (e) {
+            e.preventDefault();
+            var myid = $(this).data("id");
+            window.location = "/Admin/ProductPrice/" + myid;
+        })
+    })
+</script>
+}

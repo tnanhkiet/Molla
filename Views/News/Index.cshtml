@@ -1,0 +1,118 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Tin tức";
+}
+
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('/assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title">Tin Tức</h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Tin Tức</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    @{
+                        List<List<string>> news = (List<List<string>>)ViewBag.News;
+                        foreach (var item in news)
+                        {
+                            <article class="entry entry-list">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <figure class="entry-media">
+                                    <a href="@Url.Action("Details", "News", new {Id = item[7]})">
+                                        <img src="/assets/images/news/@item[0]" alt="image desc">
+                                    </a>
+                                </figure><!-- End .entry-media -->
+                            </div><!-- End .col-md-5 -->
+
+                            <div class="col-md-7">
+                                <div class="entry-body">
+                                    <div class="entry-meta">
+                                        <span class="entry-author">
+                                            đăng bởi <a href="#">@item[1]</a>
+                                        </span>
+                                        <span class="meta-separator">|</span>
+                                        <a href="#">@item[2]</a>
+                                        <span class="meta-separator">|</span>
+                                        <a href="#">@item[3] bình luận</a>
+                                    </div><!-- End .entry-meta -->
+
+                                    <h2 class="entry-title">
+                                        <a href="@Url.Action("Details", "News", new {Id = item[7]})">@item[4]</a>
+                                    </h2><!-- End .entry-title -->
+
+                                    <div class="entry-cats">
+                                        thuộc <a href="#">@item[5]</a>
+                                    </div><!-- End .entry-cats -->
+
+                                    <div class="entry-content">
+                                        <p>@item[6]</p>
+                                        <a href="@Url.Action("Details", "News", new {Id = item[7]})" class="read-more">Xem chi tiết</a>
+                                    </div><!-- End .entry-content -->
+                                </div><!-- End .entry-body -->
+                            </div><!-- End .col-md-7 -->
+                        </div><!-- End .row -->
+                    </article>
+                        }
+                    }
+                    @{
+                        int currentPage = (int)ViewBag.CurrentPage;
+                        Func<int?,string> generateUrl = (int? pagenumber)  => {
+                                    return Url.Page("", new {page = pagenumber});
+                                };
+                        int totalPage = (int)ViewBag.TotalPage;
+                        int? preview = null;
+                        int? next = null;
+                        if (currentPage > 1)
+                            preview = currentPage - 1;
+                        if (currentPage < totalPage)
+                            next = currentPage + 1;
+                    }
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                <a class="page-link page-link-prev" href="@generateUrl(preview)" aria-label="Previous" tabindex="-1"
+                                    aria-disabled="true">
+                                    <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Trước
+                                </a>
+                            </li>
+                            @{
+                                int start = 1, end = totalPage;
+                                if (start - 2 > 1)
+                                {
+                                    start = currentPage - 2;
+                                }
+                                if (currentPage + 2 < totalPage)
+                                {
+                                    end = currentPage + 2;
+                                }
+                                for (int i = start; i <= end; i++)
+                                {
+                                    <li class="page-item @(currentPage == i ? "active" : "")"><a class="page-link" href="@generateUrl(i)">@i</a></li>
+                                }
+                            }
+                            <li class="page-item @(currentPage == totalPage ? "disabled" : "")">
+                                <a class="page-link page-link-next" href="@generateUrl(next)" aria-label="Next">
+                                    Sau <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div><!-- End .col-lg-9 -->
+
+                <partial name="_RightMenu" />
+            </div><!-- End .row -->
+        </div><!-- End .container -->
+    </div><!-- End .page-content -->
+</main>

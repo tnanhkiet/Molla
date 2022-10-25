@@ -1,0 +1,56 @@
+@model ProductPrice
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Thông tin đơn giá";
+}
+
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Thông tin đơn giá</h3>
+    </div>
+    <!-- /.card-header -->
+    <!-- form start -->
+    <form asp-controller="Admin" asp-action="SavePrices" method="post" enctype="multipart/form-data">
+        <div class="card-body">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" name="productId" value="@Model.ProductId" />
+            <div class="form-group">
+                <label for="colorId">Màu sắc</label>
+                @Html.DropDownList("colorId",(SelectList)ViewBag.Color, new { @class="form-control" })
+            </div>
+            <div class="form-group">
+                <label for="sizeId">Kích thước</label>
+                @Html.DropDownList("sizeId",(SelectList)ViewBag.Size, new { @class="form-control" })
+            </div>
+            <div class="form-group">
+                <label for="price">Đơn giá</label>
+                <input type="number" name="price" value="@Model.Price" class="form-control" required/>
+            </div>
+            <div class="form-group">
+                <label for="picture">Hình ảnh</label>
+                <input type="file" name="picture" class="form-control" required/>
+            </div>
+            <div class="form-group">
+                <label for="amount">Số lượng</label>
+                <input type="number" name="amount" value="@Model.Amount" class="form-control" required/>
+            </div>
+        </div>
+        <!-- /.card-body -->
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+    </form>
+</div>
+@section css{
+<link rel="stylesheet" href="/assets/plugins/summernote/summernote-bs4.min.css">
+}
+@section js{
+<script src="/assets/plugins/summernote/summernote-bs4.min.js"></script>
+<script>
+    $(function () {
+        // Summernote
+        $('.summernote').summernote()
+    })
+</script>
+}

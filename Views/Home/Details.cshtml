@@ -1,0 +1,358 @@
+@model Product;
+@using KShop;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Sản phẩm";
+    MollaContext db = ViewBag.DB;
+
+}
+
+<main class="main">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+        <div class="container d-flex align-items-center">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Sản Phẩm</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="container">
+            <div class="product-details-top">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-gallery product-gallery-vertical">
+                            <div class="row">
+                                @{
+                                    string[] pictures = Model.Picture.Split(',');
+                                }
+                                <figure class="product-main-image">
+                                    <img id="product-zoom" src="/assets/images/products/@pictures[0].Trim()"
+                                        data-zoom-image="/assets/images/products/@pictures[0].Trim()" alt="@Model.Name">
+
+                                    <a href="#" id="btn-product-gallery" class="btn-product-gallery">
+                                        <i class="icon-arrows"></i>
+                                    </a>
+                                </figure><!-- End .product-main-image -->
+
+                                <div id="product-zoom-gallery" class="product-image-gallery">
+                                    @{
+                                        for (int i = 0; i < pictures.Length; i++)
+                                        {
+                                            <a class="product-gallery-item active" href="#"
+                                            data-image="/assets/images/products/@pictures[i].Trim()"
+                                            data-zoom-image="/assets/images/products/@pictures[i].Trim()">
+                                                <img src="/assets/images/products/@pictures[i].Trim()" alt="@Model.Name">
+                                            </a>
+                                        }
+                                    }
+                                </div><!-- End .product-image-gallery -->
+                            </div><!-- End .row -->
+                        </div><!-- End .product-gallery -->
+                    </div><!-- End .col-md-6 -->
+
+                    <div class="col-md-6">
+                        <div class="product-details">
+                            <h1 class="product-title">@Model.Name</h1>
+                            <!-- End .product-title -->
+
+                            <div class="ratings-container">
+                                @{
+                                    int starAvg = 0, countVoting = 0;
+                                    try
+                                    {
+                                        starAvg = (int)db.productVoting.Where(v => v.ProductId == Model.Id).Average(v => v.Star).Value;
+                                        countVoting = db.productVoting.Where(v => v.ProductId == Model.Id).Count();
+                                    }
+                                    catch { }
+                                    <div class="ratings">
+                                        <div class="ratings-val" style="width: @(Html.Raw(starAvg*20))%;"></div>
+                                        <!-- End .ratings-val -->
+                                    </div><!-- End .ratings -->
+                                    <a class="ratings-text" href="#product-review-link" id="review-link">( @countVoting đánh giá )</a>
+                                }
+                            </div><!-- End .rating-container -->
+
+                            <div class="product-price" id="product-price-main">
+                            </div><!-- End .product-price -->
+
+                            <div class="product-content">
+                                <p>@Html.Raw(Model.Description)</p>
+                            </div><!-- End .product-content -->
+
+                            <div class="details-filter-row details-row-size">
+                                <label>Màu sắc:</label>
+
+                                <div class="product-nav product-nav-thumbs">
+                                    @{
+                                        var colorPictures = db.productPrice.Where(p => p.ProductId == Model.Id).ToList();
+                                        foreach (var item in colorPictures)
+                                        {
+                                            <a data-colorid="@item.ColorId" href="#">
+                                                <img src="/assets/images/products/@item.Picture" alt="">
+                                            </a>
+                                        }
+                                    }
+                                </div><!-- End .product-nav -->
+                            </div><!-- End .details-filter-row -->
+
+                            <div class="details-filter-row details-row-size">
+                                <label for="size">Size:</label>
+                                <div class="select-custom">
+                                    <select name="size" id="size" class="form-control">
+                                        @{
+                                            var sizes = db.size.Where(s => db.productPrice.Where(p => p.ProductId == Model.Id).Select(p => p.SizeId).Contains(s.Id)).ToList();
+                                            foreach (var item in sizes)
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div><!-- End .select-custom -->
+                            </div><!-- End .details-filter-row -->
+
+                            <div class="details-filter-row details-row-size">
+                                <label for="qty">Số lượng:</label>
+                                <div class="product-details-quantity">
+                                    <input type="number" id="qty" class="form-control" value="1" min="1" max="10"
+                                        step="1" data-decimals="0" required>
+                                </div><!-- End .product-details-quantity -->
+                            </div><!-- End .details-filter-row -->
+
+                            <div class="product-details-action">
+                                <a href="#" data-id="@Model.Id" class="btn-product btn-cart"><span>Thêm vào giỏ
+                                        hàng</span></a>
+                            </div><!-- End .product-details-action -->
+
+                            <div class="product-details-footer">
+                                <div class="product-cat">
+                                    <span>Chuyên mục:</span>
+                                    @{
+                                        var categories = db.categories.Where(c => db.productCategory.Where(p => p.ProductId == Model.Id).Select(p => p.CategoryId).Contains(c.Id)).Select(c => c.Name).ToArray();
+                                    }
+                                    <a href="#">@string.Join(", ", categories)</a>
+                                </div><!-- End .product-cat -->
+
+                                <div class="social-icons social-icons-sm">
+                                    <span class="social-label">Share:</span>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?p[url]=https://kiet.com/@Url.Action("Details", "Product", new { Id = Model.Id})"
+                                        class="social-icon" title="Facebook" target="_blank"><i
+                                            class="icon-facebook-f"></i></a>
+                                    <a href="#" class="social-icon" title="Twitter" target="_blank"><i
+                                            class="icon-twitter"></i></a>
+                                    <a href="#" class="social-icon" title="Instagram" target="_blank"><i
+                                            class="icon-instagram"></i></a>
+                                    <a href="#" class="social-icon" title="Pinterest" target="_blank"><i
+                                            class="icon-pinterest"></i></a>
+                                </div>
+                            </div><!-- End .product-details-footer -->
+                        </div><!-- End .product-details -->
+                    </div><!-- End .col-md-6 -->
+                </div><!-- End .row -->
+            </div><!-- End .product-details-top -->
+
+            <div class="product-details-tab">
+                <ul class="nav nav-pills justify-content-center" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="product-desc-link" data-toggle="tab" href="#product-desc-tab"
+                            role="tab" aria-controls="product-desc-tab" aria-selected="true">Thông tin chung</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="product-info-link" data-toggle="tab" href="#product-info-tab" role="tab"
+                            aria-controls="product-info-tab" aria-selected="false">Thông tin chi tiết</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="product-shipping-link" data-toggle="tab" href="#product-shipping-tab"
+                            role="tab" aria-controls="product-shipping-tab" aria-selected="false">Vận chuyển và hoàn
+                            trả</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="product-review-link" data-toggle="tab" href="#product-review-tab"
+                            role="tab" aria-controls="product-review-tab" aria-selected="false">Đánh giá</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="product-desc-tab" role="tabpanel"
+                        aria-labelledby="product-desc-link">
+                        <div class="product-desc-content">
+                            @Html.Raw(Model.Information)
+                        </div><!-- End .product-desc-content -->
+                    </div><!-- .End .tab-pane -->
+                    <div class="tab-pane fade" id="product-info-tab" role="tabpanel"
+                        aria-labelledby="product-info-link">
+                        <div class="product-desc-content">
+                            @Html.Raw(Model.Additional)
+                        </div><!-- End .product-desc-content -->
+                    </div><!-- .End .tab-pane -->
+                    <div class="tab-pane fade" id="product-shipping-tab" role="tabpanel"
+                        aria-labelledby="product-shipping-link">
+                        <div class="product-desc-content">
+                            @Html.Raw(Model.Shipping)
+                        </div><!-- End .product-desc-content -->
+                    </div><!-- .End .tab-pane -->
+                    <div class="tab-pane fade" id="product-review-tab" role="tabpanel"
+                        aria-labelledby="product-review-link">
+                        <div class="reviews">
+                            @{
+                                var reviews = db.productVoting.Where(v => v.ProductId == Model.Id).ToList();
+                                <h3>Đánh giá (@reviews.Count())</h3>
+                                foreach (var item in reviews)
+                                {
+                                    var memberName = db.members.Find(item.CreatedBy).Name;
+                                    <div class="review">
+                                            <div class="row no-gutters">
+                                                <div class="col-auto">
+                                                    <h4><a href="#">@memberName</a></h4>
+                                                    <div class="ratings-container">
+                                                        <div class="ratings">
+                                                            <div class="ratings-val" style="width: @(item.Star.Value *20)%;"></div>
+                                                            <!-- End .ratings-val -->
+                                                        </div><!-- End .ratings -->
+                                                    </div><!-- End .rating-container -->
+                                                    <span class="review-date">@item.CreatedDate.Value.ToString("dd-MM-yyyy")</span>
+                                                </div><!-- End .col -->
+                                            <div class="col">
+
+                                                    <div class="review-content">
+                                                        <p>@item.Content</p>
+                                                    </div><!-- End .review-content -->
+
+                                                <div class="review-action">
+                                                        <a href="#"><i class="icon-thumbs-up"></i>Hữu ích (@(item.Helpful != null ?
+                                                    item.Helpful : 0))</a>
+                                                        <a href="#"><i class="icon-thumbs-down"></i>Không hữu ích (@(item.UnHelpful
+                                                    != null ? item.UnHelpful : 0))</a>
+                                                </div><!-- End .review-action -->
+                                            </div><!-- End .col-auto -->
+                                        </div><!-- End .row -->
+                                    </div><!-- End .review -->
+                                }
+                            }
+                        </div><!-- End .reviews -->
+                    </div><!-- .End .tab-pane -->
+                </div><!-- End .tab-content -->
+            </div><!-- End .product-details-tab -->
+
+            <h2 class="title text-center mb-4">Sản phẩm cùng thương hiệu</h2><!-- End .title text-center -->
+
+            <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl"
+                data-owl-options='{
+                            "nav": false, 
+                            "dots": true,
+                            "margin": 20,
+                            "loop": false,
+                            "responsive": {
+                                "0": {
+                                    "items":1
+                                },
+                                "480": {
+                                    "items":2
+                                },
+                                "768": {
+                                    "items":3
+                                },
+                                "992": {
+                                    "items":4
+                                },
+                                "1200": {
+                                    "items":4,
+                                    "nav": true,
+                                    "dots": false
+                                }
+                            }
+                        }'>
+                @{
+                    var productBrands = db.product.Where(p => p.BrandId == Model.BrandId && p.Id != Model.Id).OrderByDescending(p => p.CreatedDate).Take(10).ToList();
+                    foreach (var item in productBrands)
+                    {
+                        var cats = db.categories.Where(c => db.productCategory.Where(p => p.ProductId == item.Id).Select(p => p.CategoryId).Contains(c.Id)).Select(c => c.Name).ToArray();
+                        string firstPic = item.Picture.Split(",")[0];
+                        decimal priceMin = db.productPrice.Where(p => p.ProductId == item.Id).Min(p => p.Price).Value;
+                        var revCount = db.productVoting.Where(v => v.ProductId == item.Id).Count();
+                        double revStar = 0;
+                        if (revCount > 0)
+                        {
+                            revStar = db.productVoting.Where(v => v.ProductId == item.Id).Average(v => v.Star).Value;
+                        }
+                        var pics = db.productPrice.Where(p => p.ProductId == item.Id).Select(p => p.Picture).ToList();
+                        <div class="product product-7 text-center">
+                            <figure class="product-media">
+                                <a href="@Url.Action("Details", "Home", new { Id = item.Id})">
+                                    <img src="/assets/images/products/@firstPic" alt="@item.Name" class="product-image">
+                                </a>
+                        </figure><!-- End .product-media -->
+
+                        <div class="product-body">
+                            <div class="product-cat"><a href="#">@string.Join(", ", cats)</a></div>
+                                <h3 class="product-title"><a
+                                    href="@Url.Action("Details", "Home", new { Id = item.Id})">@item.Name</a></h3>
+                                <!-- End .product-title -->
+                            <div class="product-price">
+                                    @priceMin.ToString("#,##0") VNĐ
+                                </div><!-- End .product-price -->
+                            <div class="ratings-container">
+                                    <div class="ratings">
+                                        <div class="ratings-val" style="width: @(revStar * 20)%;"></div><!-- End .ratings-val -->
+                                    </div><!-- End .ratings -->
+                                <span class="ratings-text">( @revCount đánh giá )</span>
+                                </div><!-- End .rating-container -->
+
+                            <div class="product-nav product-nav-thumbs">
+                                    @foreach (var i in pics)
+                                    {
+                                        <a href="#">
+                                            <img src="/assets/images/products/@i" alt="">
+                                        </a>
+                                    }
+                                </div><!-- End .product-nav -->
+                        </div><!-- End .product-body -->
+                    </div>
+                    }
+                }
+            </div><!-- End .owl-carousel -->
+        </div><!-- End .container -->
+    </div><!-- End .page-content -->
+</main>
+@section js{
+<script src="/assets/js/bootstrap-input-spinner.js"></script>
+<script src="/assets/js/jquery.elevateZoom.min.js"></script>
+<script src="/assets/js/bootstrap-input-spinner.js"></script>
+<script>
+    $(function () {
+        $(".product-nav-thumbs a:first-child").addClass("active");
+        getPrices();
+        $(document).on("click", ".product-nav-thumbs a", function (event) {
+            event.preventDefault();
+            $(".product-nav-thumbs a").removeClass("active");
+            $(this).addClass("active");
+            getPrices();
+        })
+        $("#size").on("change", function (event) {
+            e.preventDefault();
+            getPrices();
+        })
+        function getPrices() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("getPrices")",
+                contentType: 'application/json; charset=UTF-8',
+                data: {
+                    productId: '@Model.Id',
+                    colorId: $(".product-nav-thumbs a[class=active]").data("colorid"),
+                    sizeId: $("#size").val()
+                },
+                dataType: "json",
+                success: function (item) {
+                    if (item.id != "" && item.amount > 0) {
+                        $("#product-price-main").html(parseInt(item.price).toLocaleString() + " VNĐ");
+                    }
+                    else {
+                        $("#product-price-main").html("Tạm hết hàng");
+                    }
+                }
+            });
+        }
+    });
+</script>
+}

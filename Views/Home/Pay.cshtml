@@ -1,0 +1,169 @@
+@using Web.SessionService;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor Accessor
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Thanh toán";
+}
+
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('/assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title">Thanh Toán<span>Giỏ hàng</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Thanh Toán</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="checkout">
+            <div class="container">
+                <div class="checkout-discount">
+                    <form action="#">
+                        <input type="text" class="form-control" required id="checkout-discount-input">
+                        <label for="checkout-discount-input" class="text-truncate">Bạn có giảm giá? <span>Nhập mã giảm
+                                giá tại đây</span></label>
+                    </form>
+                </div><!-- End .checkout-discount -->
+                <form action="#">
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <h2 class="checkout-title">Thông tin chi tiết</h2><!-- End .checkout-title -->
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label>Tên *</label>
+                                    <input type="text" class="form-control" required>
+                                </div><!-- End .col-sm-6 -->
+
+                                <div class="col-sm-6">
+                                    <label>Họ *</label>
+                                    <input type="text" class="form-control" required>
+                                </div><!-- End .col-sm-6 -->
+                            </div><!-- End .row -->
+
+                            <label>Địa chỉ *</label>
+                            <input type="text" class="form-control" required>
+
+                            <label>Số điện thoại *</label>
+                            <input type="tel" class="form-control" required>
+
+                            <label>Email *</label>
+                            <input type="email" class="form-control" required>
+
+                            <label>Thông tin ghi chú</label>
+                            <textarea class="form-control" cols="30" rows="4"
+                                placeholder="Ghi chú về đơn đặt hàng của bạn, ví dụ: lưu ý thời gian giao hàng"></textarea>
+                        </div><!-- End .col-lg-9 -->
+                        <aside class="col-lg-3">
+                            <div class="summary">
+                                <h3 class="summary-title">Đơn hàng của bạn</h3><!-- End .summary-title -->
+
+                                <table class="table table-summary">
+                                    <thead>
+                                        <tr>
+                                            <th>Sản phẩm</th>
+                                            <th>Giá</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @{
+                                            var myProducts = Accessor.HttpContext.Session.Get<List<KShop.Controllers.HomeController.myCart>>("Cart");
+                                            var totalPrice = 0;
+                                            foreach (var item in myProducts)
+                                            {
+                                                <tr>
+                                                    <td><a href="#">@item._product.Name</a></td>
+                                                    <td>@item._amount x @(item._productPrice.Price.Value.ToString("#,##0")) VNĐ</td>
+                                                </tr>
+                                            }
+                                        }
+                                        <tr class="summary-subtotal">
+                                            <td>Tổng:</td>
+                                            <td class="cart-total-price"></td>
+                                        </tr><!-- End .summary-subtotal -->
+                                        <tr>
+                                            <td>Vận chuyển:</td>
+                                            <td>Free shipping</td>
+                                        </tr>
+                                        <tr class="summary-total">
+                                            <td>Tổng cộng:</td>
+                                            <td class="cart-total-price"></td>
+                                        </tr><!-- End .summary-total -->
+                                    </tbody>
+                                </table><!-- End .table table-summary -->
+
+                                <div class="accordion-summary" id="accordion-payment">
+                                    <div class="card">
+                                        <div class="card-header" id="heading-1">
+                                            <h2 class="card-title">
+                                                <a role="button" data-toggle="collapse" href="#collapse-1"
+                                                    aria-expanded="true" aria-controls="collapse-1">
+                                                    Tài khoản ngân hàng
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-1" class="collapse show" aria-labelledby="heading-1"
+                                            data-parent="#accordion-payment">
+                                            <div class="card-body">
+                                                Thực hiện thanh toán của bạn trực tiếp vào tài khoản ngân hàng của chúng
+                                                tôi.
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card -->
+
+                                    <div class="card">
+                                        <div class="card-header" id="heading-2">
+                                            <h2 class="card-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse"
+                                                    href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+                                                    Thanh toán khi nhận hàng
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-2" class="collapse" aria-labelledby="heading-2"
+                                            data-parent="#accordion-payment">
+                                            <div class="card-body">
+                                                Thực hiện thanh toán bằng tiền mặt khi bạn nhận hàng.
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card -->
+
+                                    <div class="card">
+                                        <div class="card-header" id="heading-3">
+                                            <h2 class="card-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse"
+                                                    href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+                                                    Thẻ tín dụng/Ghi nợ
+                                                    <img src="/assets/images/payments-summary.png" alt="payments cards">
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-3" class="collapse" aria-labelledby="heading-3"
+                                            data-parent="#accordion-payment">
+                                            <div class="card-body">
+                                                Thanh toán bằng thẻ tín dụng hoặc thẻ ghi nợ.
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card -->
+                                </div><!-- End .accordion -->
+
+                                <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                    <span class="btn-text">Dặt hàng</span>
+                                    <span class="btn-hover-text">Xác nhận đơn hàng</span>
+                                </button>
+                            </div><!-- End .summary -->
+                        </aside><!-- End .col-lg-3 -->
+                    </div><!-- End .row -->
+                </form>
+            </div><!-- End .container -->
+        </div><!-- End .checkout -->
+    </div><!-- End .page-content -->
+</main>

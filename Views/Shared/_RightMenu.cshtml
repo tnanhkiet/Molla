@@ -1,0 +1,64 @@
+<aside class="col-lg-3">
+    <div class="sidebar">
+        <div class="widget widget-search">
+            <h3 class="widget-title">Tìm kiếm</h3><!-- End .widget-title -->
+
+            <form action="#">
+                <label for="ws" class="sr-only">Tìm bài viết</label>
+                <input type="search" class="form-control" name="ws" id="ws" placeholder="Tìm bài viết" required>
+                <button type="submit" class="btn"><i class="icon-search"></i><span class="sr-only">Tìm
+                        kiếm</span></button>
+            </form>
+        </div><!-- End .widget -->
+
+        <div class="widget widget-cats">
+            <h3 class="widget-title">Chuyên mục</h3><!-- End .widget-title -->
+
+            <ul>
+                @{
+                    List<List<string>> categories = (List<List<string>>)ViewBag.Categories;
+                    foreach (var item in categories)
+                    {
+                        <li><a href="@Url.Action("Index","News", new {CategoryId = item[0]})">@item[1]<span>@item[2]</span></a>
+                        </li>
+                    }
+                }
+            </ul>
+        </div><!-- End .widget -->
+
+        <div class="widget">
+            <h3 class="widget-title">Bài viết mới nhất</h3><!-- End .widget-title -->
+
+            <ul class="posts-list">
+                @{
+                    List<News> news = (List<News>)ViewBag.RightNews;
+                    foreach (var item in news)
+                    {
+                        <li>
+                            <figure>
+                                <a href="@Url.Action("Details", "News", new {Id = item.Id})">
+                                    <img src="/assets/images/news/@item.Picture" alt="post">
+                                </a>
+                            </figure>
+
+                            <div>
+                                <span>@item.CreatedDate.Value.ToString("dd-MM-yyyy")</span>
+                                <a href="@Url.Action("Details", "News", new {Id = item.Id})">@item.Title</a>
+                            </div>
+                        </li>
+                    }
+                }
+            </ul><!-- End .posts-list -->
+        </div><!-- End .widget -->
+
+        <div class="widget widget-banner-sidebar">
+            <div class="banner-sidebar-title">ad box 280 x 280</div><!-- End .ad-title -->
+
+            <div class="banner-sidebar banner-overlay">
+                <a href="#">
+                    <img src="/assets/images/blog/sidebar/banner.jpg" alt="banner">
+                </a>
+            </div><!-- End .banner-ad -->
+        </div><!-- End .widget -->
+    </div><!-- End .sidebar -->
+</aside>
